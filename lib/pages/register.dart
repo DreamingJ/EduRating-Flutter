@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
+import 'package:edu_rating_app/config.dart';
 import 'package:edu_rating_app/routes.dart';
 import 'package:edu_rating_app/utils/common_toast.dart';
-import 'package:edu_rating_app/utils/dio_http.dart';
+// import 'package:edu_rating_app/utils/dio_http.dart';
 import 'package:edu_rating_app/utils/string_is_empty.dart';
 import 'package:flutter/material.dart';
 
@@ -30,27 +32,22 @@ class _RegisterPageState extends State<RegisterPage> {
       CommonToast.showToast('用户名或密码不能为空！');
       return;
     }
-    CommonToast.showToast('激活成功！');
-                        Future.delayed(Duration(milliseconds: 600), () {
-                          Navigator.pushReplacementNamed(context, Routes.login);
-                          // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:  (context)=>TabStudy()),(route) => route == null);
-                        });
-    // //接口地址
-    // const url = '/user/registered';
-    // //post参数
-    // var params = {"username": username, "password": pwd};
-    // //response
-    // var res = await DioHttp.of(context).post(url, params);
-    // //转为json格式
-    // var resString = json.decode(res.toString());
+    
+    //接口地址
+    const url = Config.BaseUrl+'/user/register';
+    //post参数
+    var params = FormData.fromMap({"userID": username, "userPwd": pwd});
+    //response
+    var res = await Dio().post(url, data: params);
+    //转为json格式
+    var resString = json.decode(res.toString());
 
-    // int status = resString['status'];
-    // String description = resString['description'] ?? '内部错误';
-    // CommonToast.showToast(description);
-    // //HTTP状态码2开头，成功连接
-    // if (status.toString().startsWith('2')) {
-    //   Navigator.pushReplacementNamed(context, Routes.login);
-    // }
+    String code = resString['code'];
+    String msg = resString['msg'];
+    CommonToast.showToast(msg);
+    if (code=='0') {
+      Navigator.pushReplacementNamed(context, Routes.login);
+    }
   }
 
   @override
@@ -64,25 +61,6 @@ class _RegisterPageState extends State<RegisterPage> {
             minimum: EdgeInsets.all(30),
             child: ListView(
               children: <Widget>[
-                // const DropdownButton(
-                //   title: Text('选择身份'),
-                //   leading: Icon(Icons.list),
-                //   children: <Widget>[
-                //     ListTile(
-                //       title: Text('学生'),
-                //     ),
-                //     ListTile(
-                //       title: Text('教师'),
-                //     ),
-                //     ListTile(
-                //       title: Text('教学督导'),
-                //     ),
-                //     ListTile(
-                //       title: Text('领导'),
-                //       subtitle: Text('subtitle'),
-                //     ),
-                //   ],
-                // ),
                 TextField(
                   controller: usernameController,
                   decoration: InputDecoration(

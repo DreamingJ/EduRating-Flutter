@@ -16,7 +16,7 @@ class Application extends StatelessWidget {
       final router= FluroRouter();
       Routes.confRoutes(router);
       return ChangeNotifierProvider(
-      create: (context) => UserIDProvider(), child:MaterialApp(
+      create: (context) => UserInfoProvider(), child:MaterialApp(
         // home: LoginPage(),
         home: HomePage(),
         onGenerateRoute: router.generator,

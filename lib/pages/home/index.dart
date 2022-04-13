@@ -1,14 +1,11 @@
 import 'package:edu_rating_app/pages/home/tab_info/info_pre.dart';
 import 'package:edu_rating_app/pages/home/tab_study/study_pre.dart';
-import 'package:edu_rating_app/pages/home/tab_teaching/teaching_index.dart';
+// import 'package:edu_rating_app/pages/home/tab_teaching/teaching_index.dart';
 import 'package:edu_rating_app/pages/home/tab_teaching/teaching_pre.dart';
-import 'package:edu_rating_app/pages/userIDProvider.dart';
-import 'package:edu_rating_app/widgets/page_content.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 // 1.导航栏准备3个tab内容
-Widget tabView(int index,String userID){
+Widget tabView(int index){
   if(index == 0)  return TeachingPre();
   else if(index == 1) return StudyPre();
   else  return TabInfo();
@@ -47,12 +44,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final userID = Provider.of<UserIDProvider>(context).userID;
     return Scaffold(
       // appBar: AppBar(
       //   title: const Text('BottomNavigationBar Sample'),
       // ),
-      body: tabView(_selectedIndex,  userID),
+      body: tabView(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: barItemList,
         currentIndex: _selectedIndex,

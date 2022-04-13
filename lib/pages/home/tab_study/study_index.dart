@@ -35,7 +35,7 @@ class _TabTeachingState extends State<TabStudy> {
 
   @override
   Widget build(BuildContext context) {
-    final userID = Provider.of<UserIDProvider>(context).userID;
+    final userID = Provider.of<UserInfoProvider>(context).userID;
     //curList  查询——加入——展现
       curUser =  userList.firstWhere((element) => element.userID == userID);
     //内存中的课表要重新初始化

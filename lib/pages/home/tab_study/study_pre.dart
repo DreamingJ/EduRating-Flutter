@@ -1,63 +1,51 @@
-import 'package:edu_rating_app/data/course_List.dart';
-import 'package:edu_rating_app/data/teachEval_list.dart';
-import 'package:edu_rating_app/pages/userIDProvider.dart';
+import 'dart:convert';
+
+import 'package:edu_rating_app/pages/globalUserInfo.dart';
+// import 'package:edu_rating_app/pages/userIDProvider.dart';
 import 'package:edu_rating_app/routes.dart';
+import 'package:edu_rating_app/utils/dio_http.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart';
 
-import '../../../data/user_list.dart';
 
-class StudyPre extends StatelessWidget {
+class StudyPre extends StatefulWidget {
   const StudyPre({Key? key}) : super(key: key);
-  // const StudyPre({Key? key, required this.userID}) : super(key: key);
-  // final String userID;
-  
 
   @override
-  Widget build(BuildContext context) {
-    final userID = Provider.of<UserIDProvider>(context).userID;
-    // List<CourseItemData> curCourseList = [];
-    int courseCount = 0;
-    String semester = "2021-2022-1";
-    UserListData curUser=UserListData(userID: '2018211563', userName: '蒋明君', userPwd: '2018211563');
-    //user表的信息
-    for (var user in userList) {
-    if (user.userID == userID) {
-      curUser =  user;
-      break;
-    }
-    }
-    //teachEval表信息
-    if(curUser.status == "学生"){
-      for(var item in teachEvalList){
-        if(item.userID == userID){
-          //待评价课程数量
-          if(item.isSubmit == false){
-            courseCount += 1;
-          }
-        }
-      }
-    }
-    //其它角色，根据院系确定评课数
-    else if(curUser.status == "教师同行"){
-      for(var item in dataList){
-        if(item.deptID == curUser.deptID && item.teacherName != curUser.userName){
-          if(item.isSubmit == false){
-            courseCount += 1;
-          }
-        }
-      }
-    }
-    else{ 
-      for(var item in dataList){
-        if(item.deptID == curUser.deptID){
-          if(item.isSubmit == false){
-            courseCount += 1;
-          }
-        }
-      }
-    }
+  State<StudyPre> createState() => _StudyPreState();
+}
 
+class _StudyPreState extends State<StudyPre> {
+  // const StudyPre({Key? key, required this.userID}) : super(key: key);
+  int studyEvalCount = 0;
+  int year = DateTime.now().year;
+  int seme = DateTime.now().month > 3 ? 2:1;
+  String curUserID = GlobalUserInfo.userID;
+  String curUserName =  GlobalUserInfo.userName;
+    String curUserStatus =  GlobalUserInfo.status;
+    String semester = "2021-2022-1";
+    
+  @override
+  void initState() {
+    super.initState();
+    //学期，增加字段or分表
+    semester = (year-1).toString()+"-"+year.toString()+"-"+seme.toString();
+  }
+
+  Future<void> getStudyEvalNum(String userID) async{
+    Map<String, String> params = {'userID': userID};
+    // var res = await Dio().get(Config.BaseUrl+'/teacheval/num',queryParameters: params);
+    var res = await DioHttp.of(context).get('/studyeval/num',params: params);
+    var resString = json.decode(res.toString());
+    studyEvalCount = resString["data"];
+    //刷新页面
+    setState(() {
+      //使用Navigator.push后页面就会重新build
+    });
+    }
+  @override
+  Widget build(BuildContext context) {
+    getStudyEvalNum(curUserID);
     return Scaffold(
         appBar: AppBar(
           title: Text('评学首页'),
@@ -70,7 +58,7 @@ class StudyPre extends StatelessWidget {
               padding:
                   EdgeInsets.only(left: 30, top: 26, right: 30, bottom: 20),
               child: Text(
-                "${curUser.userName}，欢迎!",
+                "${curUserName}，欢迎!",
                 style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
               ),
             ),
@@ -81,12 +69,12 @@ class StudyPre extends StatelessWidget {
             ),
             Padding(padding: EdgeInsets.all(10)),
             Text(
-              "类别：${curUser.status}评学",
+              "类别：${curUserStatus}评学",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
             ),
             Padding(padding: EdgeInsets.all(10)),
             Text(
-              "您还有 ${courseCount} 门课程需要进行评学",
+              "您还有 ${studyEvalCount} 门课程需要进行评学",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
             ),
             Padding(padding: EdgeInsets.fromLTRB(0, 40, 0, 5),),

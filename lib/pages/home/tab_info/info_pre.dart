@@ -1,17 +1,10 @@
-import 'package:edu_rating_app/data/user_list.dart';
-import 'package:edu_rating_app/pages/userIDProvider.dart';
+import 'package:edu_rating_app/pages/globalUserInfo.dart';
 import 'package:edu_rating_app/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class TabInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final userID = Provider.of<UserIDProvider>(context).userID;
-    UserListData curUser = UserListData(
-        userID: '2018211563', userName: '蒋明君', userPwd: '2018211563');
-    //user表的信息
-    curUser = userList.firstWhere((element) => element.userID == userID);
     return Scaffold(
         appBar: AppBar(
           title: Text("信息页"),
@@ -34,17 +27,17 @@ class TabInfo extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      curUser.userName,
+                      GlobalUserInfo.userName,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 23,
                         // fontStyle:
                       ),
                     ),
-                    Text('ID:' + curUser.userID),
+                    Text('ID:' + GlobalUserInfo.userID),
                     Padding(padding: EdgeInsets.only(
                     top: 10.0),),
-                    Text('身份：' + curUser.status),
+                    Text('身份：' + GlobalUserInfo.status),
                     Text('院系：计算机学院',),
                     
                   ],

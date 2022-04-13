@@ -1,7 +1,13 @@
 
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
+import 'package:edu_rating_app/config.dart';
 import 'package:edu_rating_app/data/course_List.dart';
 import 'package:edu_rating_app/data/teachEval_list.dart';
+import 'package:edu_rating_app/pages/globalUserInfo.dart';
 import 'package:edu_rating_app/pages/userIDProvider.dart';
+import 'package:edu_rating_app/utils/dio_http.dart';
 import 'package:edu_rating_app/widgets/course_item_wigdet.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,42 +31,42 @@ class TabTeaching extends StatefulWidget {
 class _TabTeachingState extends State<TabTeaching> {
   String _searchword = '';
   TextEditingController? _controller;
-  UserListData curUser=UserListData(userID: '2018211563', userName: '蒋明君', userPwd: '2018211563');
 
   @override
   void initState() {
+    //initstate只是首次，网络请求放哪？
     _controller = TextEditingController(text: widget.inputValue);
     super.initState();
   }
 
+  Future<void> getTeachEvalItems() async{
+    Map<String, String> params = {'userID': GlobalUserInfo.userID};
+    var res = await Dio().get(Config.BaseUrl+'/teacheval/items',queryParameters: params);
+    // var res = await DioHttp.of(context).get('/teacheval/items',params: params);
+    //TODO: respose对象的 tostring方法出了问题， json数组反序列化
+    // var resString = json.decode(res.data);
+    //encode是字符串
+    var resString = jsonEncode(res.data);
+    //decode是可迭代数组
+    var resJson = json.decode(resString);
+    // resString["data"];
+    for(var item in resJson){
+      CourseItemData curItem = CourseItemData(courseID: item["courseID"],courseName: item["courseID"], teacherName: item["teacherName"], deptID: item["deptName"], semester: item["semester"], isSubmit: item["submit"]);
+      widget.curCourseList.add(curItem);
+    }
+    
+    //刷新页面
+    setState(() {
+      //使用Navigator.push后页面就会重新build
+    });
+    }
+
   @override
   Widget build(BuildContext context) {
-    final userID = Provider.of<UserIDProvider>(context).userID;
-    //curList  查询——加入——展现
-      curUser =  userList.firstWhere((element) => element.userID == userID);
+    //每次重置为空，重新取
     widget.curCourseList=[];
-    //teachEval表信息
-    if(curUser.status == "学生"){
-      for(var item in teachEvalList){
-        if(item.userID == userID){
-          //在选课表中找课程，把课程表中的项加入进list
-          widget.curCourseList.add(dataList.firstWhere((element) => item.courseID ==element.courseID));
-        }
-      }
-    }
-    //其它角色，根据院系确定评课数
-    else if(curUser.status == "教师同行"){
-      widget.curCourseList = dataList.where((element) => element.deptID == curUser.deptID && element.teacherName != curUser.userName).toList();
-    }
-    else{ 
-      // for(var item in dataList){
-      //   if(item.deptID == curUser.deptID){
-      //     widget.curCourseList.add(item);
-      //   }
-      // }
-      //这一句和上面完成的功能一样
-      widget.curCourseList = dataList.where((element) => element.deptID == curUser.deptID).toList();
-    }
+    getTeachEvalItems();
+    
     return Scaffold(
         appBar: AppBar(
           leading: BackButton(color: Colors.white),
@@ -89,6 +95,7 @@ class _TabTeachingState extends State<TabTeaching> {
                                   borderRadius: BorderRadius.circular(17.0),
                                   color: Colors.grey[200]),
                               child: TextField(
+                                //只是改变词然后重新build
                                   onSubmitted: (String value) {
                                     setState(() {
                                       _searchword = value;

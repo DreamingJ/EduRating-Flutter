@@ -36,7 +36,7 @@ class _InfoIndexState extends State<InfoIndex> {
 
   @override
   Widget build(BuildContext context) {
-    final userID = Provider.of<UserIDProvider>(context).userID;
+    final userID = Provider.of<UserInfoProvider>(context).userID;
     //curList  查询——加入——展现
       curUser =  userList.firstWhere((element) => element.userID == userID);
       widget.curCourseList=[];

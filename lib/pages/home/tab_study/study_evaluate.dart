@@ -39,7 +39,7 @@ class _TeachingEvaluateState extends State<StudyEvaluate> {
 
   @override
   Widget build(BuildContext context) {
-    final userID = Provider.of<UserIDProvider>(context).userID;
+    final userID = Provider.of<UserInfoProvider>(context).userID;
     var curCourse = dataList.firstWhere(
       (element) => element.courseID == widget.courseID,
     );

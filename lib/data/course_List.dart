@@ -13,7 +13,7 @@ class CourseItemData {
     required this.courseName,
     required this.teacherName,
     required this.semester,
-    this.deptID = '2018211',
+    this.deptID = '计算机学院',
     this.isSubmit = false, //TODO：此字段应放在评教表中，每人不一样
     }
   );
