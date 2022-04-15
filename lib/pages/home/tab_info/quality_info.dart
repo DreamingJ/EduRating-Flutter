@@ -3,8 +3,10 @@ import 'package:edu_rating_app/data/course_List.dart';
 import 'package:flutter/Material.dart';
 
 class QualityInfo extends StatefulWidget {
-  const QualityInfo({Key? key, required this.courseID}) : super(key: key);
+  const QualityInfo({Key? key, required this.courseID, required this.courseName,required this.teacherName,}) : super(key: key);
   final String courseID;
+  final String courseName;
+  final String teacherName;
 
   @override
   State<QualityInfo> createState() => _QualityInfoState();
@@ -13,10 +15,6 @@ class QualityInfo extends StatefulWidget {
 class _QualityInfoState extends State<QualityInfo> {
   @override
   Widget build(BuildContext context) {
-    // final userID = Provider.of<UserIDProvider>(context).userID;
-    var curCourse = dataList.firstWhere(
-      (element) => element.courseID == widget.courseID,
-    );
     return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -28,11 +26,11 @@ class _QualityInfoState extends State<QualityInfo> {
           child: Column(children: [
             Padding(padding: EdgeInsets.only(top: 80)),
             Text(
-              "课程名称：${curCourse.courseName}",
+              "课程名称：${widget.courseName}",
               style: TextStyle(fontSize: 23, fontWeight: FontWeight.normal),
             ),
             Text(
-              "教师：${curCourse.teacherName}",
+              "教师：${widget.teacherName}",
               style: TextStyle(fontSize: 23, fontWeight: FontWeight.normal),
             ),
             Padding(padding: EdgeInsets.only(bottom: 30)),

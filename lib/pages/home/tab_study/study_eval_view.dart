@@ -6,26 +6,26 @@ import 'package:edu_rating_app/pages/globalUserInfo.dart';
 import 'package:edu_rating_app/utils/common_toast.dart';
 import 'package:flutter/Material.dart';
 
-class TeachEvalView extends StatefulWidget {
+class StudyEvalView extends StatefulWidget {
   List<Map<String, String>> dataList = [];
   num sum = 0;
   String courseID;
   String courseName;
-  TeachEvalView({Key? key, required this.courseID, required this.courseName})
+  StudyEvalView({Key? key, required this.courseID, required this.courseName})
       : super(key: key);
 
   @override
-  State<TeachEvalView> createState() => _TeachEvalViewState();
+  State<StudyEvalView> createState() => _StudyEvalViewState();
 }
 
-class _TeachEvalViewState extends State<TeachEvalView> {
+class _StudyEvalViewState extends State<StudyEvalView> {
   List<String> ques = [
-    "1.该课程注重道德修养和理想信念的培养，教师教学态度良好",
-    "2.该课程教学目标清晰，内容具有挑战性，教学方法得当，师生互动良好",
-    "3.该课程教学能够有效激发我主动学习的能力，能激发我的学习热情",
-    "4.通过该课程，我的知识、能力、素质得到全面提升",
-    "5.总体而言，该课程教学效果好，我会向同学推荐该课程",
-    "6.我的意见或建议："
+    "1.课堂出勤纪律情况",
+    "2.课堂听讲互动情况",
+    "3.课余主动学习情况",
+    "4.作业实验完成情况",
+    "5.学习效果及知识技能掌握情况",
+    "6.对于该门课的学生学习情况，我的意见或建议："
   ];
 
   List<String> answer = ["", "", "", "", "", ""];
@@ -33,15 +33,15 @@ class _TeachEvalViewState extends State<TeachEvalView> {
   String gradeToStr(int num) {
     switch (num) {
       case 20:
-        return "非常同意(20)";
+        return "非常好(20)";
       case 18:
-        return "同意(18)";
+        return "较好(18)";
       case 16:
         return "一般(16)";
       case 14:
-        return "不同意(14)";
+        return "较差(14)";
       case 12:
-        return "非常不同意(12)";
+        return "非常差(12)";
       default:
         return "";
     }
@@ -50,39 +50,38 @@ class _TeachEvalViewState extends State<TeachEvalView> {
   @override
   void initState() {
     super.initState();
-    // widget.dataList = [];
     for(var item in widget.dataList){
       item.values.toList()[0]="";
     }
-    getTeachResItems();
+    getStudyResItems();
   }
 
-  Future<void> getTeachResItems() async {
+  Future<void> getStudyResItems() async {
     Map<String, String> params = {
       'userID': GlobalUserInfo.userID,
       'courseID': widget.courseID
     };
     var res = await Dio()
-        .get(Config.BaseUrl + '/teacheval/res', queryParameters: params);
+        .get(Config.BaseUrl + '/studyeval/res', queryParameters: params);
     //encode是字符串
     var resString = jsonEncode(res.data);
     //decode是可迭代数组
     var resJson = json.decode(resString);
     // resString["data"];
 
-    if (resJson["teachItem1"] is int == true) {
-      answer[0] = gradeToStr(resJson["teachItem1"]);
-      answer[1] = gradeToStr(resJson["teachItem2"]);
-      answer[2] = gradeToStr(resJson["teachItem3"]);
-      answer[3] = gradeToStr(resJson["teachItem4"]);
-      answer[4] = gradeToStr(resJson["teachItem5"]);
-      answer[5] = resJson["teachComment"];
+    if (resJson["studyItem1"] is int == true) {
+      answer[0] = gradeToStr(resJson["studyItem1"]);
+      answer[1] = gradeToStr(resJson["studyItem2"]);
+      answer[2] = gradeToStr(resJson["studyItem3"]);
+      answer[3] = gradeToStr(resJson["studyItem4"]);
+      answer[4] = gradeToStr(resJson["studyItem5"]);
+      answer[5] = resJson["studyComment"];
 
       for (int i = 0; i < ques.length; i++) {
         widget.dataList.add(Map.from({ques[i]: answer[i]}));
       }
       for (int i = 1; i < 6; i++) {
-        widget.sum += resJson["teachItem$i"];
+        widget.sum += resJson["studyItem$i"];
       }
       //刷新页面
       setState(() {
@@ -99,7 +98,7 @@ class _TeachEvalViewState extends State<TeachEvalView> {
     return Scaffold(
         appBar: AppBar(
           leading: BackButton(color: Colors.white),
-          title: const Text('查看评教结果'),
+          title: const Text('查看评学结果'),
           centerTitle: true,
         ),
         body: Container(
@@ -121,7 +120,7 @@ class _TeachEvalViewState extends State<TeachEvalView> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text('你的评价总分：',
+                            const Text('你的评学总分：',
                                 style: TextStyle(
                                   fontSize: 16,
                                 )),
@@ -144,6 +143,7 @@ class _TeachEvalViewState extends State<TeachEvalView> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.green)),
                 child: Text("完成查看"),
               ),
               Padding(padding: EdgeInsets.only(bottom: 10)),
@@ -184,7 +184,7 @@ class _TeachEvalViewState extends State<TeachEvalView> {
                             padding: EdgeInsets.fromLTRB(0, 0, 25, 8),
                             child: Padding(
                                 padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-                                child: data?.keys.toList()[0] != "6.我的意见或建议："
+                                child: data?.keys.toList()[0] != "6.对于该门课的学生学习情况，我的意见或建议："
                                     ? Row(
                                         // crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [

@@ -1,16 +1,5 @@
 import 'package:flutter/Material.dart';
 
-// class UserIDProvider extends ChangeNotifier{
-  
-//   String _userID = "2018211563";
-//   String get userID => _userID;
-
-//   void change(String value){
-//     _userID = value;
-//     notifyListeners();
-//   }
-// }
-
 //其实不用provider用全局变量也能搞定，并不是实时的状态管理
 class UserInfoProvider extends ChangeNotifier{
   //默认值

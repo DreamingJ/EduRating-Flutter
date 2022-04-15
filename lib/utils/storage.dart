@@ -1,4 +1,3 @@
-import 'package:edu_rating_app/utils/local_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //是对shared_pre的封装
 

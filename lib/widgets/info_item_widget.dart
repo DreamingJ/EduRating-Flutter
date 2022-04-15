@@ -14,9 +14,9 @@ class InfoItemWidget extends StatelessWidget {
         onTap: (){
           //传入课程ID，在teachEval中展现评教表信息
           isPortraitKind? 
-          Navigator.pushNamed(context, '/portraitInfo?courseID=${data.courseID}',)
+          Navigator.pushNamed(context, '/portraitInfo?courseID=${data.courseID}&courseName=${Uri.encodeComponent(data.courseName)}&teacherName=${Uri.encodeComponent(data.teacherName)}',)
           :
-          Navigator.pushNamed(context, '/qualityInfo?courseID=${data.courseID}',);
+          Navigator.pushNamed(context, '/qualityInfo?courseID=${data.courseID}&courseName=${Uri.encodeComponent(data.courseName)}&teacherName=${Uri.encodeComponent(data.teacherName)}',);
         },
         child: Container(
             

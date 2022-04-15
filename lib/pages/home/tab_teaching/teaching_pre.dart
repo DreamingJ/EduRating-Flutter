@@ -1,8 +1,7 @@
 import 'dart:convert';
 
-// import 'package:dio/dio.dart';
-// import 'package:edu_rating_app/config.dart';
-// import 'package:edu_rating_app/pages/userIDProvider.dart';
+import 'package:dio/dio.dart';
+import 'package:edu_rating_app/config.dart';
 import 'package:edu_rating_app/pages/globalUserInfo.dart';
 import 'package:edu_rating_app/routes.dart';
 import 'package:edu_rating_app/utils/dio_http.dart';
@@ -36,8 +35,8 @@ class _TeachingPreState extends State<TeachingPre> {
 
   Future<void> getTeachEvalNum(String userID) async{
     Map<String, String> params = {'userID': userID};
-    // var res = await Dio().get(Config.BaseUrl+'/teacheval/num',queryParameters: params);
-    var res = await DioHttp.of(context).get('/teacheval/num',params: params);
+    var res = await Dio().get(Config.BaseUrl+'/teacheval/num',queryParameters: params);
+    // var res = await DioHttp.of(context).get('/teacheval/num',params: params);
     var resString = json.decode(res.toString());
     teachEvalCount = resString["data"];
     //刷新页面
@@ -48,6 +47,7 @@ class _TeachingPreState extends State<TeachingPre> {
 
   @override
   Widget build(BuildContext context) {
+    //TODO： 总共需要评教 n 门课程
     //build是用来构建使视图的，pop时build执行但initstate不执行
 
     //数据库中取回curuser信息

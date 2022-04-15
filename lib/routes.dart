@@ -2,6 +2,7 @@ import 'package:edu_rating_app/pages/home/index.dart';
 import 'package:edu_rating_app/pages/home/tab_info/info_index.dart';
 import 'package:edu_rating_app/pages/home/tab_info/portrait_info.dart';
 import 'package:edu_rating_app/pages/home/tab_info/quality_info.dart';
+import 'package:edu_rating_app/pages/home/tab_study/study_eval_view.dart';
 import 'package:edu_rating_app/pages/home/tab_study/study_evaluate.dart';
 import 'package:edu_rating_app/pages/home/tab_study/study_index.dart';
 import 'package:edu_rating_app/pages/home/tab_teaching/teach_eval_view.dart';
@@ -24,8 +25,10 @@ class Routes{
   static String teachEval='/teachEval';
   static String teachEvalView='/teachEval/view';
   static String studyEval='/studyEval';
+  static String studyEvalView='/studyEval/view';
   static String qualityInfo='/qualityInfo';
   static String portraitInfo='/portraitInfo';
+  //注意URI不用驼峰大写
 
   //2。路由处理函数
   static Handler _homeHandler = Handler(
@@ -77,22 +80,35 @@ class Routes{
     return TeachEvalView(courseID: courseID, courseName: courseName);
   });
 
+  static Handler _studyEvalViewHandler = Handler(
+    handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
+      String courseID = params['courseID']?.first;
+      String courseName = params['courseName']?.first;
+
+    return StudyEvalView(courseID: courseID, courseName: courseName);
+  });
+
   static Handler _studyEvalHandler = Handler(
     handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
       String courseID = params['courseID']?.first;
-    return StudyEvaluate(courseID: courseID,);
+      String courseName = params['courseName']?.first;
+    return StudyEvaluate(courseID: courseID, courseName: courseName);
   });
 
   static Handler _qualityInfoHandler = Handler(
     handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
       String courseID = params['courseID']?.first;
-    return QualityInfo(courseID: courseID,);
+      String courseName = params['courseName']?.first;
+      String teacherName = params['teacherName']?.first;
+    return QualityInfo(courseID: courseID, courseName: courseName,teacherName:teacherName);
   });
 
   static Handler _portraitInfoHandler = Handler(
     handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
       String courseID = params['courseID']?.first;
-    return PortraitInfo(courseID: courseID,);
+      String courseName = params['courseName']?.first;
+      String teacherName = params['teacherName']?.first;
+    return PortraitInfo(courseID: courseID,courseName: courseName,teacherName:teacherName);
   });
 
   //3.建立关联
@@ -110,6 +126,7 @@ class Routes{
     router.define(infoIndex, handler: _infoIndexHandler);
     router.define(teachEval, handler: _teachEvalHandler);
     router.define(teachEvalView, handler: _teachEvalViewHandler);
+    router.define(studyEvalView, handler: _studyEvalViewHandler);
     router.define(studyEval, handler: _studyEvalHandler);
     router.define(qualityInfo, handler: _qualityInfoHandler);
     router.define(portraitInfo, handler: _portraitInfoHandler);

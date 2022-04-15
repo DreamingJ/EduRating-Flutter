@@ -1,21 +1,15 @@
 import 'dart:convert';
 
-// import 'package:conditional_questions/conditional_questions.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
-// import 'package:edu_rating_app/data/user_list.dart';
-// import 'package:edu_rating_app/pages/home/index.dart';
-// import 'package:edu_rating_app/pages/home/tab_teaching/teaching_pre.dart';
 import 'package:edu_rating_app/pages/userIDProvider.dart';
 import 'package:edu_rating_app/pages/globalUserInfo.dart';
 import 'package:edu_rating_app/routes.dart';
 import 'package:edu_rating_app/config.dart';
 import 'package:flutter/Material.dart';
 import 'package:provider/provider.dart';
-// import 'package:flutter/material.dart';
 
 import '../utils/common_toast.dart';
-// import '../utils/dio_http.dart';
 import '../utils/string_is_empty.dart';
 
 class LoginPage extends StatefulWidget {

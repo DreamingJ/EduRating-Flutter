@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:edu_rating_app/config.dart';
 import 'package:edu_rating_app/pages/globalUserInfo.dart';
-import 'package:edu_rating_app/pages/home/tab_teaching/global_teachform.dart';
+import 'package:edu_rating_app/pages/global_teachform.dart';
 import 'package:edu_rating_app/routes.dart';
 import 'package:edu_rating_app/utils/common_toast.dart';
 import 'package:edu_rating_app/widgets/questoins/models.dart';

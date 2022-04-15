@@ -1,22 +1,19 @@
 
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
+import 'package:edu_rating_app/config.dart';
 import 'package:edu_rating_app/data/course_List.dart';
-import 'package:edu_rating_app/data/teachEval_list.dart';
-import 'package:edu_rating_app/pages/userIDProvider.dart';
-import 'package:edu_rating_app/widgets/course_item_wigdet.dart';
+import 'package:edu_rating_app/pages/globalUserInfo.dart';
 import 'package:edu_rating_app/widgets/info_item_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../../../data/user_list.dart';
 
 class InfoIndex extends StatefulWidget {
-  // final String userID;
   List<CourseItemData> curCourseList=[]; //要渲染的课程列表
   final String inputValue=""; //搜索框值
   bool isPortraitKind;
   InfoIndex({
     Key? key, required this.isPortraitKind
-    // required this.userID,
   }) : super(key: key);
 
   @override
@@ -26,47 +23,43 @@ class InfoIndex extends StatefulWidget {
 class _InfoIndexState extends State<InfoIndex> {
   String _searchword = '';
   TextEditingController? _controller;
-  UserListData curUser=UserListData(userID: '2018211563', userName: '蒋明君', userPwd: '2018211563');
 
   @override
   void initState() {
     _controller = TextEditingController(text: widget.inputValue);
     super.initState();
+    // widget.curCourseList=[];
+    getTeachEvalItems();
   }
+
+  Future<void> getTeachEvalItems() async{
+    Map<String, String> params = {'userID': GlobalUserInfo.userID};
+    var res = await Dio().get(Config.BaseUrl+'/teacheval/items',queryParameters: params);
+    // var res = await DioHttp.of(context).get('/teacheval/items',params: params);
+    //encode是字符串
+    
+    var resString = jsonEncode(res.data);
+    //decode是可迭代数组
+    var resJson = json.decode(resString);
+    // resString["data"];
+    for(var item in resJson){
+      CourseItemData curItem = CourseItemData(courseID: item["courseID"],courseName: item["courseName"], teacherName: item["teacherName"], deptID: item["deptName"], semester: item["semester"], isSubmit: item["submit"]);
+      widget.curCourseList.add(curItem);
+    }
+    
+    //刷新页面
+    setState(() {
+      //使用Navigator.push后页面就会重新build
+    });
+    }
 
   @override
   Widget build(BuildContext context) {
-    final userID = Provider.of<UserInfoProvider>(context).userID;
-    //curList  查询——加入——展现
-      curUser =  userList.firstWhere((element) => element.userID == userID);
-      widget.curCourseList=[];
-
-    //teachEval表信息
-    if(curUser.status == "学生"){
-      for(var item in teachEvalList){
-        if(item.userID == userID){
-          //在选课表中找课程，把课程表中的项加入进list
-          widget.curCourseList.add(dataList.firstWhere((element) => item.courseID ==element.courseID));
-        }
-      }
-    }
-    //其它角色，根据院系确定评课数
-    else if(curUser.status == "教师同行"){
-      widget.curCourseList = dataList.where((element) => element.deptID == curUser.deptID && element.teacherName != curUser.userName).toList();
-    }
-    else{ 
-      // for(var item in dataList){
-      //   if(item.deptID == curUser.deptID){
-      //     widget.curCourseList.add(item);
-      //   }
-      // }
-      //这一句和上面完成的功能一样
-      widget.curCourseList = dataList.where((element) => element.deptID == curUser.deptID).toList();
-    }
+    
     return Scaffold(
         appBar: AppBar(
           leading: BackButton(color: Colors.white),
-          title: const Text('选择课程'),
+          title: const Text('选择查看栏目'),
           centerTitle: true,
         ),
         body: Container(

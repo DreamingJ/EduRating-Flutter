@@ -1,119 +1,115 @@
-// import 'package:conditional_questions/conditional_questions.dart';
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
+import 'package:edu_rating_app/config.dart';
+import 'package:edu_rating_app/pages/globalUserInfo.dart';
+import 'package:edu_rating_app/pages/global_teachform.dart';
+import 'package:edu_rating_app/routes.dart';
 import 'package:edu_rating_app/widgets/questoins/models.dart';
 import 'package:edu_rating_app/widgets/questoins/widget.dart';
-import 'package:edu_rating_app/data/course_List.dart';
-import 'package:edu_rating_app/data/teachEval_list.dart';
-import 'package:edu_rating_app/pages/userIDProvider.dart';
 // import 'package:edu_rating_app/routes.dart';
 import 'package:edu_rating_app/utils/common_toast.dart';
 import 'package:flutter/Material.dart';
-import 'package:provider/provider.dart';
-// import 'package:flutter/material.dart';
 
 class StudyEvaluate extends StatefulWidget {
-  const StudyEvaluate({Key? key, required this.courseID}) : super(key: key);
+  const StudyEvaluate({Key? key, required this.courseID, required this.courseName}) : super(key: key);
   final String courseID;
+  final String courseName;
 
   @override
-  State<StudyEvaluate> createState() => _TeachingEvaluateState();
+  State<StudyEvaluate> createState() => _StudyEvaluateState();
 }
 
-int quesToInt(String ques) {
-  switch (ques) {
-    case "非常同意(20)":
-      return 20;
-    case "同意(18)":
-      return 18;
-    case "一般(16)":
-      return 16;
-    case "不同意(14)":
-      return 14;
-    case "非常不同意(12)":
-      return 12;
-    default:
-      return 0;
+int quesToInt(String? ques) {
+  if (ques == null) {
+    return 0;
+  } else {
+    switch (ques) {
+      case "非常好(20)":
+        return 20;
+      case "较好(18)":
+        return 18;
+      case "一般(16)":
+        return 16;
+      case "较差(14)":
+        return 14;
+      case "非常差(12)":
+        return 12;
+      default:
+        return 0;
+    }
   }
 }
 
-class _TeachingEvaluateState extends State<StudyEvaluate> {
+class _StudyEvaluateState extends State<StudyEvaluate> {
   final _key = GlobalKey<QuestionFormState>();
 
   @override
   Widget build(BuildContext context) {
-    final userID = Provider.of<UserInfoProvider>(context).userID;
-    var curCourse = dataList.firstWhere(
-      (element) => element.courseID == widget.courseID,
-    );
-    return Scaffold(
+  return Scaffold(
         appBar: PreferredSize(
             child: AppBar(
               title: Container(
                   child: Column(
                 children: [
                   Text(
-                    "课程名称：${curCourse.courseName}",
+                    "课程名称：${widget.courseName}",
                   ),
                 ],
               )),
               centerTitle: true,
             ),
             preferredSize: Size.fromHeight(70)),
-        body:
-            ConditionalQuestions(
+        body: ConditionalQuestions(
           key: _key,
           children: questions(),
           trailing: [
-            //已评价就是【完成】按钮
-            curCourse.isSubmit
-                ? ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text("完成查看"),
-                  )
-                : ElevatedButton(
+            ElevatedButton(
+              onPressed: () async {
+                if (_key.currentState!.validate()) {
+                  Map<String, dynamic> params = {
+                    'userID': GlobalUserInfo.userID,
+                    'courseID': widget.courseID,
+                    'studyItem1': quesToInt(GlobalTeachForm.teachForm[0]),
+                    'studyItem2': quesToInt(GlobalTeachForm.teachForm[1]),
+                    'studyItem3': quesToInt(GlobalTeachForm.teachForm[2]),
+                    'studyItem4': quesToInt(GlobalTeachForm.teachForm[3]),
+                    'studyItem5': quesToInt(GlobalTeachForm.teachForm[4]),
+                    'studyComment': GlobalTeachForm.teachForm[5]
+                  };
+                  //必须先把map转成formdata，才能过dio，否则error400
+                  var formdata = FormData.fromMap(params);
+                  //response
+                  try {
+                    var res = await Dio()
+                        .post(Config.BaseUrl + '/studyeval', data: formdata);
+                    //转为json格式
+                    var resString = json.decode(res.toString());
 
-                    onPressed: () async {
-                      if (_key.currentState!.validate()) {
-                        //提交表单项，但此时不会起效
-                      for (var item in teachEvalList) {
-                        if (item.courseID == curCourse &&
-                            item.userID == userID) {
-                          item.isSubmit = true;
-                          item.teachItem1 =
-                              quesToInt(questions()[0].answer.text);
-                          item.teachItem2 =
-                              quesToInt(questions()[1].answer.text);
-                          item.teachItem3 =
-                              quesToInt(questions()[2].answer.text);
-                          item.teachItem4 =
-                              quesToInt(questions()[3].answer.text);
-                          item.teachItem5 =
-                              quesToInt(questions()[4].answer.text);
-                          item.teachSuggest = questions()[5].answer.text;
-                        }
-                      }
-                      //更新字段，
-                      for (var item in dataList) {
-                        if (item.courseID == curCourse) {
-                          item.isSubmit = true;
-                        }
-                      }
+                    String code = resString['code'];
+                    String msg = resString['msg'];
+
+                    if (code == '0') {
                       CommonToast.showToast('提交成功！');
-                      Future.delayed(Duration(seconds: 1), () {
-                        Navigator.pop(context);
-                        // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:  (context)=>TabStudy()),(route) => route == null);
-                      });
-                        // print("validated!");
-                        // return;
-                      }
-                      else{
-                      CommonToast.showToast('请检查填写内容！');
+                      //清空
+                      GlobalTeachForm.clean();
+                      Navigator.pushReplacementNamed(
+                          context, Routes.studyIndex);
+                      // Navigator.pop(context);
+                    } else {
+                      CommonToast.showToast(msg);
                     }
-                    },
-                    // color: Colors.green,
-                    child: Text('提交评价'),
-                  )
+                  } catch (e) {
+                    // print(e);
+                    CommonToast.showToast("提交时错误，请联系管理员");
+                  }
+                } else {
+                  CommonToast.showToast('请检查填写内容！');
+                }
+              },
+              // color: Colors.green,
+              child: Text('提交评价'),
+            )
           ],
           leading: const [
             Text("请基于以下内容，对本课程进行打分",
@@ -147,12 +143,7 @@ class _TeachingEvaluateState extends State<StudyEvaluate> {
           answers: ["非常好(20)", "较好(18)", "一般(16)", "较差(14)", "非常差(12)"],
           isMandatory: true),
       Question(
-        question: "对于该门课的学生学习情况，我的意见或建议：",
-        //isMandatory: true,
-        // validate: (field) {
-        //   if (field.isEmpty) return "Field cannot be empty";
-        //   return null;
-        // },
+        question: "6.对于该门课的学生学习情况，我的意见或建议：",
       ),
       /* NestedQuestion(
       question: "The series will depend on your answer",

@@ -1,6 +1,6 @@
 // import 'package:conditional_questions/conditional_questions.dart';
 
-import 'package:edu_rating_app/pages/home/tab_teaching/global_teachform.dart';
+import 'package:edu_rating_app/pages/global_teachform.dart';
 import 'package:flutter/Material.dart';
 
 import 'models.dart';

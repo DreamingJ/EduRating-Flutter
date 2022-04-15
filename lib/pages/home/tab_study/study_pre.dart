@@ -1,11 +1,11 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
+import 'package:edu_rating_app/config.dart';
 import 'package:edu_rating_app/pages/globalUserInfo.dart';
-// import 'package:edu_rating_app/pages/userIDProvider.dart';
 import 'package:edu_rating_app/routes.dart';
-import 'package:edu_rating_app/utils/dio_http.dart';
+// import 'package:edu_rating_app/utils/dio_http.dart';
 import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
 
 
 class StudyPre extends StatefulWidget {
@@ -34,8 +34,8 @@ class _StudyPreState extends State<StudyPre> {
 
   Future<void> getStudyEvalNum(String userID) async{
     Map<String, String> params = {'userID': userID};
-    // var res = await Dio().get(Config.BaseUrl+'/teacheval/num',queryParameters: params);
-    var res = await DioHttp.of(context).get('/studyeval/num',params: params);
+    var res = await Dio().get(Config.BaseUrl+'/studyeval/num',queryParameters: params);
+    // var res = await DioHttp.of(context).get('/studyeval/num',params: params);
     var resString = json.decode(res.toString());
     studyEvalCount = resString["data"];
     //刷新页面
