@@ -1,5 +1,6 @@
 //课程卡片组件，可复用，在不同页面点击卡片进行不同跳转
 import 'package:edu_rating_app/data/course_List.dart';
+import 'package:edu_rating_app/routes.dart';
 import 'package:flutter/material.dart';
 
 
@@ -14,9 +15,18 @@ class CourseItemWidget extends StatelessWidget {
         onTap: (){
           //传入课程ID，在teachEval中展现评教表信息
           isStudyKind? 
-          Navigator.pushNamed(context, '/studyEval?courseID=${data.courseID}',)
+          (data.isSubmit?  
+          Navigator.pushNamed(context, '/teachEval/view?courseID=${data.courseID}&courseName=${Uri.encodeComponent(data.courseName)}',)
           :
-          Navigator.pushNamed(context, '/teachEval?courseID=${data.courseID}',);
+          Navigator.pushNamed(context, '/studyEval?courseID=${data.courseID}',)
+          )
+          :
+          (
+          data.isSubmit?
+          Navigator.pushNamed(context, '/teachEval/view?courseID=${data.courseID}&courseName=${Uri.encodeComponent(data.courseName)}',)
+          :
+          Navigator.pushNamed(context, '/teachEval?courseID=${data.courseID}&courseName=${Uri.encodeComponent(data.courseName)}',)
+          );
         },
         child: Container(
             

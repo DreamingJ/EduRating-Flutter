@@ -7,14 +7,14 @@ class CourseItemData {
   final String semester;
   final String deptID;
   // final List<String> tags;
-  bool isSubmit;
+  bool isSubmit=false;
   CourseItemData(
     {required this.courseID,
     required this.courseName,
     required this.teacherName,
     required this.semester,
     this.deptID = '计算机学院',
-    this.isSubmit = false, //TODO：此字段应放在评教表中，每人不一样
+    this.isSubmit = false, 
     }
   );
 }
@@ -42,7 +42,7 @@ List<CourseItemData> dataList=[
       teacherName: "李坚强",
       semester:
           "2021-2022-1",
-      courseID: '3132102117',
+      courseID: '2018001002',
       // tags: ["近地铁", "随时看房"]
       ),
   CourseItemData(

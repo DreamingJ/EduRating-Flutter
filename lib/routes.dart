@@ -4,6 +4,7 @@ import 'package:edu_rating_app/pages/home/tab_info/portrait_info.dart';
 import 'package:edu_rating_app/pages/home/tab_info/quality_info.dart';
 import 'package:edu_rating_app/pages/home/tab_study/study_evaluate.dart';
 import 'package:edu_rating_app/pages/home/tab_study/study_index.dart';
+import 'package:edu_rating_app/pages/home/tab_teaching/teach_eval_view.dart';
 import 'package:edu_rating_app/pages/home/tab_teaching/teaching_evaluate.dart';
 import 'package:edu_rating_app/pages/home/tab_teaching/teaching_index.dart';
 import 'package:edu_rating_app/pages/not_found_page.dart';
@@ -21,6 +22,7 @@ class Routes{
   static String studyIndex='/studyIndex';
   static String infoIndex='/infoIndex';
   static String teachEval='/teachEval';
+  static String teachEvalView='/teachEval/view';
   static String studyEval='/studyEval';
   static String qualityInfo='/qualityInfo';
   static String portraitInfo='/portraitInfo';
@@ -45,8 +47,6 @@ class Routes{
 
   static Handler _teachIndexHandler = Handler(
     handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
-    //   String userID = params['userID']?.first;
-    // return TabTeaching(userID: userID,);
     return TabTeaching();
   });
 
@@ -64,7 +64,17 @@ class Routes{
   static Handler _teachEvalHandler = Handler(
     handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
       String courseID = params['courseID']?.first;
-    return TeachingEvaluate(courseID: courseID,);
+      String courseName = params['courseName']?.first;
+
+    return TeachingEvaluate(courseID: courseID, courseName: courseName);
+  });
+
+  static Handler _teachEvalViewHandler = Handler(
+    handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
+      String courseID = params['courseID']?.first;
+      String courseName = params['courseName']?.first;
+
+    return TeachEvalView(courseID: courseID, courseName: courseName);
   });
 
   static Handler _studyEvalHandler = Handler(
@@ -99,8 +109,29 @@ class Routes{
     router.define(studyIndex, handler: _studyIndexHandler);
     router.define(infoIndex, handler: _infoIndexHandler);
     router.define(teachEval, handler: _teachEvalHandler);
+    router.define(teachEvalView, handler: _teachEvalViewHandler);
     router.define(studyEval, handler: _studyEvalHandler);
     router.define(qualityInfo, handler: _qualityInfoHandler);
     router.define(portraitInfo, handler: _portraitInfoHandler);
   }
+
+  //自定义的参数跳转
+  // 对参数进行encode，解决参数中有特殊字符，影响fluro路由匹配
+//   static Future navigateTo(BuildContext context, String path, {required Map<String, dynamic> params, TransitionType transition = TransitionType.native}) {
+//     String query =  "";
+//       int index = 0;
+//       for (var key in params.keys) {
+//         var value = Uri.encodeComponent(params[key]);
+//         if (index == 0) {
+//           query = "?";
+//         } else {
+//           query = query + "\&";
+//         }
+//         query += "$key=$value";
+//         index++;
+//       }
+//     // print('我是navigateTo传递的参数：$query');
+//     path = path + query;
+//     return Application.router.navigateTo(context, path, transition:transition);
+//   }
 }

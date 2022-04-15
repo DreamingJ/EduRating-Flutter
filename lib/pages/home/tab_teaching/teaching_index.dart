@@ -4,15 +4,10 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:edu_rating_app/config.dart';
 import 'package:edu_rating_app/data/course_List.dart';
-import 'package:edu_rating_app/data/teachEval_list.dart';
 import 'package:edu_rating_app/pages/globalUserInfo.dart';
-import 'package:edu_rating_app/pages/userIDProvider.dart';
-import 'package:edu_rating_app/utils/dio_http.dart';
 import 'package:edu_rating_app/widgets/course_item_wigdet.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../../../data/user_list.dart';
 
 class TabTeaching extends StatefulWidget {
   // final String userID;
@@ -34,24 +29,24 @@ class _TabTeachingState extends State<TabTeaching> {
 
   @override
   void initState() {
-    //initstate只是首次，网络请求放哪？
     _controller = TextEditingController(text: widget.inputValue);
     super.initState();
+    // widget.curCourseList=[];
+    getTeachEvalItems();
   }
 
   Future<void> getTeachEvalItems() async{
     Map<String, String> params = {'userID': GlobalUserInfo.userID};
     var res = await Dio().get(Config.BaseUrl+'/teacheval/items',queryParameters: params);
     // var res = await DioHttp.of(context).get('/teacheval/items',params: params);
-    //TODO: respose对象的 tostring方法出了问题， json数组反序列化
-    // var resString = json.decode(res.data);
     //encode是字符串
+    
     var resString = jsonEncode(res.data);
     //decode是可迭代数组
     var resJson = json.decode(resString);
     // resString["data"];
     for(var item in resJson){
-      CourseItemData curItem = CourseItemData(courseID: item["courseID"],courseName: item["courseID"], teacherName: item["teacherName"], deptID: item["deptName"], semester: item["semester"], isSubmit: item["submit"]);
+      CourseItemData curItem = CourseItemData(courseID: item["courseID"],courseName: item["courseName"], teacherName: item["teacherName"], deptID: item["deptName"], semester: item["semester"], isSubmit: item["submit"]);
       widget.curCourseList.add(curItem);
     }
     
@@ -64,8 +59,8 @@ class _TabTeachingState extends State<TabTeaching> {
   @override
   Widget build(BuildContext context) {
     //每次重置为空，重新取
-    widget.curCourseList=[];
-    getTeachEvalItems();
+    // widget.curCourseList=[];
+    // getTeachEvalItems();
     
     return Scaffold(
         appBar: AppBar(

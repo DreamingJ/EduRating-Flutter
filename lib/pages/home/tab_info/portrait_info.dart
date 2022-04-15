@@ -1,5 +1,6 @@
-import 'package:conditional_questions/conditional_questions.dart';
+// import 'package:conditional_questions/conditional_questions.dart';
 import 'package:edu_rating_app/data/course_List.dart';
+import 'package:flutter/Material.dart';
 
 class PortraitInfo extends StatefulWidget {
   const PortraitInfo({Key? key, required this.courseID}) : super(key: key);

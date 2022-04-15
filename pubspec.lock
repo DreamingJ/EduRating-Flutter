@@ -43,13 +43,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.15.0"
-  conditional_questions:
-    dependency: "direct main"
-    description:
-      name: conditional_questions
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.0.0"
   crypto:
     dependency: "direct main"
     description:
@@ -70,7 +63,7 @@ packages:
       name: dio
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.0.4"
+    version: "4.0.6"
   fake_async:
     dependency: transitive
     description:
@@ -356,7 +349,7 @@ packages:
       name: win32
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.4.1"
+    version: "2.5.1"
   xdg_directories:
     dependency: transitive
     description:

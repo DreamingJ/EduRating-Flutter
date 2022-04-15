@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:conditional_questions/conditional_questions.dart';
+// import 'package:conditional_questions/conditional_questions.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 // import 'package:edu_rating_app/data/user_list.dart';
@@ -10,6 +10,8 @@ import 'package:edu_rating_app/pages/userIDProvider.dart';
 import 'package:edu_rating_app/pages/globalUserInfo.dart';
 import 'package:edu_rating_app/routes.dart';
 import 'package:edu_rating_app/config.dart';
+import 'package:flutter/Material.dart';
+import 'package:provider/provider.dart';
 // import 'package:flutter/material.dart';
 
 import '../utils/common_toast.dart';
@@ -59,7 +61,6 @@ class _LoginPageState extends State<LoginPage> {
     //成功时就把userInfo存到状态管理
     if (code == '0') {
       var resData = resString['data'];
-      //TODO: 是否需要用provider
       // userInfoProv.change(resData['userID'], resData['userName'],resData['status'],resData['deptName']);
       GlobalUserInfo.change(resData['userID'], resData['userName'],resData['status'],resData['deptName']);
       Navigator.pushReplacementNamed(context, Routes.home);

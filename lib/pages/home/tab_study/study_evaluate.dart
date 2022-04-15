@@ -1,12 +1,13 @@
-import 'package:conditional_questions/conditional_questions.dart';
+// import 'package:conditional_questions/conditional_questions.dart';
+import 'package:edu_rating_app/widgets/questoins/models.dart';
+import 'package:edu_rating_app/widgets/questoins/widget.dart';
 import 'package:edu_rating_app/data/course_List.dart';
-import 'package:edu_rating_app/data/studyEval_list.dart';
 import 'package:edu_rating_app/data/teachEval_list.dart';
-import 'package:edu_rating_app/pages/home/tab_study/study_index.dart';
-import 'package:edu_rating_app/pages/home/tab_teaching/teaching_index.dart';
 import 'package:edu_rating_app/pages/userIDProvider.dart';
 // import 'package:edu_rating_app/routes.dart';
 import 'package:edu_rating_app/utils/common_toast.dart';
+import 'package:flutter/Material.dart';
+import 'package:provider/provider.dart';
 // import 'package:flutter/material.dart';
 
 class StudyEvaluate extends StatefulWidget {
@@ -58,7 +59,6 @@ class _TeachingEvaluateState extends State<StudyEvaluate> {
             ),
             preferredSize: Size.fromHeight(70)),
         body:
-            //TODO：此组件能正常提交表单吗？能进行评教结果展示吗？不行的话自己封装container+form
             ConditionalQuestions(
           key: _key,
           children: questions(),
@@ -72,7 +72,6 @@ class _TeachingEvaluateState extends State<StudyEvaluate> {
                     child: Text("完成查看"),
                   )
                 : ElevatedButton(
-                    //TODO:提交时对应的是评教表，使用人id+课id(包含课名、开课时间) , 人ID应该存，不要传来传去
 
                     onPressed: () async {
                       if (_key.currentState!.validate()) {
@@ -101,7 +100,6 @@ class _TeachingEvaluateState extends State<StudyEvaluate> {
                         }
                       }
                       CommonToast.showToast('提交成功！');
-                      //TODO：本地1.0版用构造函数，无法持久化
                       Future.delayed(Duration(seconds: 1), () {
                         Navigator.pop(context);
                         // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:  (context)=>TabStudy()),(route) => route == null);

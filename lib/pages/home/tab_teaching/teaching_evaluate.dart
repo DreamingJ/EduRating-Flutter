@@ -1,34 +1,43 @@
-import 'package:conditional_questions/conditional_questions.dart';
-import 'package:edu_rating_app/data/course_List.dart';
-import 'package:edu_rating_app/data/teachEval_list.dart';
-import 'package:edu_rating_app/pages/home/tab_teaching/teaching_index.dart';
-import 'package:edu_rating_app/pages/userIDProvider.dart';
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
+import 'package:edu_rating_app/config.dart';
+import 'package:edu_rating_app/pages/globalUserInfo.dart';
+import 'package:edu_rating_app/pages/home/tab_teaching/global_teachform.dart';
 import 'package:edu_rating_app/routes.dart';
 import 'package:edu_rating_app/utils/common_toast.dart';
+import 'package:edu_rating_app/widgets/questoins/models.dart';
+import 'package:edu_rating_app/widgets/questoins/widget.dart';
 import 'package:flutter/material.dart';
 
 class TeachingEvaluate extends StatefulWidget {
-  const TeachingEvaluate({Key? key, required this.courseID}) : super(key: key);
-  final String courseID;
+  String courseID;
+  String courseName;
+  TeachingEvaluate({Key? key, required this.courseID, required this.courseName})
+      : super(key: key);
 
   @override
   State<TeachingEvaluate> createState() => _TeachingEvaluateState();
 }
 
-int quesToInt(String ques) {
-  switch (ques) {
-    case "非常同意(20)":
-      return 20;
-    case "同意(18)":
-      return 18;
-    case "一般(16)":
-      return 16;
-    case "不同意(14)":
-      return 14;
-    case "非常不同意(12)":
-      return 12;
-    default:
-      return 0;
+int quesToInt(String? ques) {
+  if (ques == null) {
+    return 0;
+  } else {
+    switch (ques) {
+      case "非常同意(20)":
+        return 20;
+      case "同意(18)":
+        return 18;
+      case "一般(16)":
+        return 16;
+      case "不同意(14)":
+        return 14;
+      case "非常不同意(12)":
+        return 12;
+      default:
+        return 0;
+    }
   }
 }
 
@@ -37,10 +46,6 @@ class _TeachingEvaluateState extends State<TeachingEvaluate> {
 
   @override
   Widget build(BuildContext context) {
-    final userID = Provider.of<UserInfoProvider>(context).userID;
-    var curCourse = dataList.firstWhere(
-      (element) => element.courseID == widget.courseID,
-    );
     return Scaffold(
         appBar: PreferredSize(
             child: AppBar(
@@ -48,71 +53,62 @@ class _TeachingEvaluateState extends State<TeachingEvaluate> {
                   child: Column(
                 children: [
                   Text(
-                    "课程名称：${curCourse.courseName}",
+                    "课程名称：${widget.courseName}",
                   ),
                 ],
               )),
               centerTitle: true,
             ),
             preferredSize: Size.fromHeight(70)),
-        body:
-            //TODO：此组件能正常提交表单吗？能进行评教结果展示吗？不行的话自己封装container+form
-            ConditionalQuestions(
+        body: ConditionalQuestions(
           key: _key,
           children: questions(),
           trailing: [
-            //已评价就是【完成】按钮
-            curCourse.isSubmit
-                ? ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text("完成查看"),
-                  )
-                : ElevatedButton(
-                    //TODO:提交时对应的是评教表，使用人id+课id(包含课名、开课时间) , 人ID应该存，不要传来传去
+            ElevatedButton(
+              onPressed: () async {
+                if (_key.currentState!.validate()) {
+                  Map<String, dynamic> params = {
+                    'userID': GlobalUserInfo.userID,
+                    'courseID': widget.courseID,
+                    'teachItem1': quesToInt(GlobalTeachForm.teachForm[0]),
+                    'teachItem2': quesToInt(GlobalTeachForm.teachForm[1]),
+                    'teachItem3': quesToInt(GlobalTeachForm.teachForm[2]),
+                    'teachItem4': quesToInt(GlobalTeachForm.teachForm[3]),
+                    'teachItem5': quesToInt(GlobalTeachForm.teachForm[4]),
+                    'teachComment': GlobalTeachForm.teachForm[5]
+                  };
+                  //必须先把map转成formdata，才能过dio，否则error400
+                  var formdata = FormData.fromMap(params);
+                  //response
+                  try {
+                    var res = await Dio()
+                        .post(Config.BaseUrl + '/teacheval', data: formdata);
+                    //转为json格式
+                    var resString = json.decode(res.toString());
 
-                    onPressed: () async {
-                      if (_key.currentState!.validate()) {
-                        //提交表单项，但此时不会起效
-                      for (var item in teachEvalList) {
-                        if (item.courseID == curCourse &&
-                            item.userID == userID) {
-                          item.isSubmit = true;
-                          item.teachItem1 =
-                              quesToInt(questions()[0].answer.text);
-                          item.teachItem2 =
-                              quesToInt(questions()[1].answer.text);
-                          item.teachItem3 =
-                              quesToInt(questions()[2].answer.text);
-                          item.teachItem4 =
-                              quesToInt(questions()[3].answer.text);
-                          item.teachItem5 =
-                              quesToInt(questions()[4].answer.text);
-                          item.teachSuggest = questions()[5].answer.text;
-                        }
-                      }
-                      //更新字段，
-                      for (var item in dataList) {
-                        if (item.courseID == curCourse) {
-                          item.isSubmit = true;
-                        }
-                      }
+                    String code = resString['code'];
+                    String msg = resString['msg'];
+
+                    if (code == '0') {
                       CommonToast.showToast('提交成功！');
-                      //TODO：用pop跳转不会刷新，需要刷新，本地1.0版用构造函数，无法持久化
-                      Future.delayed(Duration(seconds: 1), () {
-                        Navigator.pop(context);
-                        // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:  (context)=>TabTeaching()),(route) => route == null);
-                      });
-                        // print("validated!");
-                        // return;
-                      }
-                      else{
-                      CommonToast.showToast('请检查填写内容！');
-                    }},
-                    // color: Colors.green,
-                    child: Text('提交评价'),
-                  )
+                      //清空
+                      GlobalTeachForm.clean();
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, Routes.teachIndex, (route) => false);
+                    } else {
+                      CommonToast.showToast(msg);
+                    }
+                  } catch (e) {
+                    // print(e);
+                    CommonToast.showToast("提交时错误，请联系管理员");
+                  }
+                } else {
+                  CommonToast.showToast('请检查填写内容！');
+                }
+              },
+              // color: Colors.green,
+              child: Text('提交评价'),
+            )
           ],
           leading: const [
             Text("请基于以下内容，对本课程进行打分",
