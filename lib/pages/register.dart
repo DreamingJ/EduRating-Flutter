@@ -77,7 +77,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     hintText: "请输入密码",
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(3)),
+                Padding(padding: EdgeInsets.all(10)),
                 TextField(
                   controller: repwdController,
                   obscureText: true,
@@ -86,9 +86,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     hintText: "再次输入密码",
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(3)),
+                Padding(padding: EdgeInsets.fromLTRB(10, 20, 10, 5)),
                 SizedBox(
-                  width: 200,
+                  width: 120,
                   child: ElevatedButton(
                       child: const Text("确认激活"),
                       onPressed: () async {

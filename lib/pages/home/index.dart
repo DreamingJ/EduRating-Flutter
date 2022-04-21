@@ -1,6 +1,5 @@
 import 'package:edu_rating_app/pages/home/tab_info/info_pre.dart';
 import 'package:edu_rating_app/pages/home/tab_study/study_pre.dart';
-// import 'package:edu_rating_app/pages/home/tab_teaching/teaching_index.dart';
 import 'package:edu_rating_app/pages/home/tab_teaching/teaching_pre.dart';
 import 'package:flutter/material.dart';
 

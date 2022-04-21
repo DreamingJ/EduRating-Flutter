@@ -1,3 +1,5 @@
+import 'package:edu_rating_app/pages/admin/admin_home.dart';
+import 'package:edu_rating_app/pages/admin/admin_login.dart';
 import 'package:edu_rating_app/pages/home/index.dart';
 import 'package:edu_rating_app/pages/home/tab_info/info_index.dart';
 import 'package:edu_rating_app/pages/home/tab_info/portrait_info.dart';
@@ -17,7 +19,9 @@ import 'package:edu_rating_app/pages/login.dart';
 class Routes{
   //1.路由名称
   static String home='/home';
+  static String adminhome='/admin/home';
   static String login='/login';
+  static String adminlogin='/adminlogin';
   static String register='/register';
   static String teachIndex='/teachIndex';
   static String studyIndex='/studyIndex';
@@ -33,14 +37,22 @@ class Routes{
   //2。路由处理函数
   static Handler _homeHandler = Handler(
     handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
-      // String userID = params['userID']?.first;
-    // return HomePage(userID: userID,);
     return HomePage();
+  });
+
+  static Handler _adminhomeHandler = Handler(
+    handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
+    return adminHomePage();
   });
 
   static Handler _loginHandler = Handler(
     handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     return LoginPage();
+  });
+
+  static Handler _adminloginHandler = Handler(
+    handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
+    return adminLoginPage();
   });
 
   static Handler _registerHandler = Handler(
@@ -119,7 +131,9 @@ class Routes{
     });
 
     router.define(home, handler: _homeHandler);
+    router.define(adminhome, handler: _adminhomeHandler);
     router.define(login, handler: _loginHandler);
+    router.define(adminlogin, handler: _adminloginHandler);
     router.define(register, handler: _registerHandler);
     router.define(teachIndex, handler: _teachIndexHandler);
     router.define(studyIndex, handler: _studyIndexHandler);

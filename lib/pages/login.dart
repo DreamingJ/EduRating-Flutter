@@ -2,12 +2,10 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
-import 'package:edu_rating_app/pages/userIDProvider.dart';
 import 'package:edu_rating_app/pages/globalUserInfo.dart';
 import 'package:edu_rating_app/routes.dart';
 import 'package:edu_rating_app/config.dart';
 import 'package:flutter/Material.dart';
-import 'package:provider/provider.dart';
 
 import '../utils/common_toast.dart';
 import '../utils/string_is_empty.dart';
@@ -27,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   var passwordController = TextEditingController();
   //信息：id、密码——姓名、身份； 参数-id，去取出另外的信息： pre页用、info页用
   //前端本地版——在本地List查询输入的id，核对是否有用户，核对密码是否一致，routes传入id参数
-  _loginHandle(dynamic userInfoProv) async {
+  _loginHandle() async {
     var userID = userIDController.text;
     var password = passwordController.text;
 
@@ -69,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     //consumer
-    var userInfoProv = Provider.of<UserInfoProvider>(context);
+    // var userInfoProv = Provider.of<UserInfoProvider>(context);
     return Scaffold(
         appBar: AppBar(
           title: const Text("鸿雁授课质量评价系统"),
@@ -113,8 +111,24 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 Padding(padding: EdgeInsets.fromLTRB(10, 10, 10, 5)),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  //两端对齐
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // crossAxisAlignment: CrossAx ,
                   children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(
+                            context, Routes.adminlogin);
+                      },
+                      child: const Text(
+                        "管理员登录",
+                        //style: TextStyle(decoration: TextDecoration.underline),
+                      ),
+                      style: TextButton.styleFrom(
+                        minimumSize: Size.zero,
+                        padding: EdgeInsets.zero,
+                      ),
+                    ),
                     TextButton(
                       onPressed: () {
                         Navigator.pushReplacementNamed(
@@ -128,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                         minimumSize: Size.zero,
                         padding: EdgeInsets.zero,
                       ),
-                    )
+                    ),
                   ],
                 ),
                 SizedBox(
@@ -137,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: const Text("登录"),
                       onPressed: () async {
                         //后端接口改写， 传回的应该是这个user所有信息，  状态管理能否用json传？
-                        _loginHandle(userInfoProv);
+                        _loginHandle();
                         
 
                         // String inputuserID = userIDController.text;
