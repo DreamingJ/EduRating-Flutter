@@ -120,7 +120,7 @@ class _StudyEvalViewState extends State<StudyEvalView> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text('你的评学总分：',
+                            const Text('评学总分：',
                                 style: TextStyle(
                                   fontSize: 16,
                                 )),

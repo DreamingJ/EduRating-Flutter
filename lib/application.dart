@@ -17,8 +17,8 @@ class Application extends StatelessWidget {
       Routes.confRoutes(router);
       return MaterialApp(
         // home: LoginPage(),
-        // home: HomePage(),
-        home: adminHomePage(),
+        home: HomePage(),
+        // home: adminHomePage(),
         onGenerateRoute: router.generator,
     );
 }

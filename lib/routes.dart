@@ -2,6 +2,7 @@ import 'package:edu_rating_app/pages/admin/admin_home.dart';
 import 'package:edu_rating_app/pages/admin/admin_login.dart';
 import 'package:edu_rating_app/pages/home/index.dart';
 import 'package:edu_rating_app/pages/home/tab_info/info_index.dart';
+import 'package:edu_rating_app/pages/home/tab_info/info_study_manage.dart';
 import 'package:edu_rating_app/pages/home/tab_info/portrait_info.dart';
 import 'package:edu_rating_app/pages/home/tab_info/quality_info.dart';
 import 'package:edu_rating_app/pages/home/tab_study/study_eval_view.dart';
@@ -19,6 +20,7 @@ import 'package:edu_rating_app/pages/login.dart';
 class Routes{
   //1.路由名称
   static String home='/home';
+  static String adminstudy='/admin/study';
   static String adminhome='/admin/home';
   static String login='/login';
   static String adminlogin='/adminlogin';
@@ -38,6 +40,10 @@ class Routes{
   static Handler _homeHandler = Handler(
     handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
     return HomePage();
+  });
+  static Handler _adminstudyHandler = Handler(
+    handlerFunc: (BuildContext? context, Map<String, dynamic> params) {
+    return InfoStudyManagePage();
   });
 
   static Handler _adminhomeHandler = Handler(
@@ -131,6 +137,7 @@ class Routes{
     });
 
     router.define(home, handler: _homeHandler);
+    router.define(adminstudy, handler: _adminstudyHandler);
     router.define(adminhome, handler: _adminhomeHandler);
     router.define(login, handler: _loginHandler);
     router.define(adminlogin, handler: _adminloginHandler);

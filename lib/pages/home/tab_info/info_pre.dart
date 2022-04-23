@@ -84,9 +84,9 @@ class TabInfo extends StatelessWidget {
                   subtitle: Text('仅教师可使用'),
                   trailing: Icon(Icons.keyboard_arrow_right,),
                   onTap: () {
-                    Navigator.pushNamed(context, Routes.portraitInfo);
+                    Navigator.pushNamed(context, Routes.adminstudy);
                   },
-                  enabled: false,
+                  enabled: GlobalUserInfo.status=="教师"?true:false,
                 ),
                 ListTile(
                   leading: Icon( Icons.highlight_off,size: 33.0

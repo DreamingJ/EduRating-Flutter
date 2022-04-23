@@ -121,7 +121,7 @@ class _TeachEvalViewState extends State<TeachEvalView> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text('你的评价总分：',
+                            const Text('评价总分：',
                                 style: TextStyle(
                                   fontSize: 16,
                                 )),

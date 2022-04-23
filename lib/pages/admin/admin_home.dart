@@ -1,6 +1,6 @@
+import 'package:edu_rating_app/pages/admin/study/study_manage.dart';
+import 'package:edu_rating_app/pages/admin/teach/teach_manage.dart';
 import 'package:edu_rating_app/pages/admin/user/user_manage.dart';
-import 'package:edu_rating_app/pages/home/tab_info/info_pre.dart';
-import 'package:edu_rating_app/pages/home/tab_study/study_pre.dart';
 import 'package:edu_rating_app/routes.dart';
 import 'package:flutter/material.dart';
 
@@ -9,9 +9,9 @@ Widget tabView(int index) {
   if (index == 0)
     return UserManagePage();
   else if (index == 1)
-    return StudyPre();
+    return TeachManagePage();
   else
-    return TabInfo();
+    return StudyManagePage();
 }
 // List<Widget> tabViewList=[
 //   TeachingPre(),
